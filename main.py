@@ -1,4 +1,5 @@
 import logging
+import os
 import sentry_sdk
 from flask import Flask, request, jsonify, send_file
 from sentry_sdk.integrations.flask import FlaskIntegration
@@ -7,7 +8,7 @@ from other import Other
 from middleware import Validator
 
 sentry_sdk.init(
-    dsn="https://6fa8953c943845bc96d77b0fa3dcf1b6@o1226843.ingest.sentry.io/6372432",
+    dsn=os.getenv("SENTRY_KEY"),
     integrations=[FlaskIntegration()],
     traces_sample_rate=1.0
 )
