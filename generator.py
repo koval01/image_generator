@@ -14,7 +14,7 @@ class Generator:
     def __init__(self, quality: int = 80, image: Image = None, profile: dict = {
         "name": "Пользователь", "age": 18, "city": "Киев", "description": ""
     }) -> None:
-        self.quality = quality
+        self.quality = 100
         self.image = image
         self.color_mode = 'RGB'
         self.profile = profile
@@ -56,9 +56,18 @@ class Generator:
         )
         return image
 
+    def _text_description(self) -> None:
+        pass
+
+    def _shadowbox_draw(self, image: Image, size_shadow: int) -> Image:
+        w, h = image.size
+        box = Image.new('RGBA', (w, h + size_shadow), (0, 0, 0, 210))
+        image.paste(box, (0, h - size_shadow)); return image
+
     def create_background(self, image: Image) -> Image:
         calculated_size = self.calculate_background_size(image)
         image = image.resize(calculated_size, Image.ANTIALIAS)
+        image = self._shadowbox_draw(image, 200)
         image = image.filter(ImageFilter.GaussianBlur(max(calculated_size) / 6))
         return image
 
@@ -77,7 +86,8 @@ class Generator:
 
     @property
     def builder(self) -> Image:
-        return self._add_text_datablock(self.image_paste(
+        return self._add_text_datablock(
+            self.image_paste(
             self.create_background(self.image), self.image
         ))
 
