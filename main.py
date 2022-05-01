@@ -47,8 +47,9 @@ def page_not_found(error) -> send_file:
 
 
 @app.errorhandler(429)
-def page_not_found(error) -> send_file:
-    return Other.get_img_error(429, request.url, error)
+def page_not_found(error) -> tuple:
+    Other.get_img_error(429, request.url, error, load_img=False)
+    return "", 429
 
 
 @app.route("/generate_image", methods=['POST'])
