@@ -1,4 +1,3 @@
-import logging
 import os
 import sentry_sdk
 from flask import Flask, request, jsonify, send_file
@@ -24,38 +23,32 @@ limiter = Limiter(
 
 @app.errorhandler(500)
 def page_not_found(error) -> jsonify:
-    logging.error("Error in %s: %s", request.url, error)
-    return Other.get_img_error(500)
+    return Other.get_img_error(500, request.url, error)
 
 
 @app.errorhandler(400)
 def page_not_found(error) -> jsonify:
-    logging.error("Error in %s: %s", request.url, error)
-    return Other.get_img_error(400)
+    return Other.get_img_error(400, request.url, error)
 
 
 @app.errorhandler(404)
 def page_not_found(error) -> jsonify:
-    logging.error("Error in %s: %s", request.url, error)
-    return Other.get_img_error(404)
+    return Other.get_img_error(404, request.url, error)
 
 
 @app.errorhandler(405)
 def page_not_found(error) -> jsonify:
-    logging.error("Error in %s: %s", request.url, error)
-    return Other.get_img_error(405)
+    return Other.get_img_error(405, request.url, error)
 
 
 @app.errorhandler(408)
 def page_not_found(error) -> send_file:
-    logging.error("Error in %s: %s", request.url, error)
-    return Other.get_img_error(408)
+    return Other.get_img_error(408, request.url, error)
 
 
 @app.errorhandler(429)
 def page_not_found(error) -> send_file:
-    logging.error("Error in %s: %s", request.url, error)
-    return Other.get_img_error(429)
+    return Other.get_img_error(429, request.url, error)
 
 
 @app.route("/generate_image", methods=['POST'])
