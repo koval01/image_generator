@@ -1,6 +1,6 @@
 import os
 import sentry_sdk
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, send_file
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from sentry_sdk.integrations.flask import FlaskIntegration
@@ -22,34 +22,33 @@ limiter = Limiter(
 
 
 @app.errorhandler(500)
-def page_not_found(error) -> jsonify:
-    return Other.get_img_error(500, request.url, error)
+def page_not_found(error) -> tuple:
+    return Other.get_error(500, request.url, error)
 
 
 @app.errorhandler(400)
-def page_not_found(error) -> jsonify:
-    return Other.get_img_error(400, request.url, error)
+def page_not_found(error) -> tuple:
+    return Other.get_error(400, request.url, error)
 
 
 @app.errorhandler(404)
-def page_not_found(error) -> jsonify:
-    return Other.get_img_error(404, request.url, error)
+def page_not_found(error) -> tuple:
+    return Other.get_error(404, request.url, error)
 
 
 @app.errorhandler(405)
-def page_not_found(error) -> jsonify:
-    return Other.get_img_error(405, request.url, error)
+def page_not_found(error) -> tuple:
+    return Other.get_error(405, request.url, error)
 
 
 @app.errorhandler(408)
-def page_not_found(error) -> send_file:
-    return Other.get_img_error(408, request.url, error)
+def page_not_found(error) -> tuple:
+    return Other.get_error(408, request.url, error)
 
 
 @app.errorhandler(429)
 def page_not_found(error) -> tuple:
-    Other.get_img_error(429, request.url, error, load_img=False)
-    return "", 429
+    return Other.get_error(429, request.url, error)
 
 
 @app.route("/generate_image", methods=['POST'])
