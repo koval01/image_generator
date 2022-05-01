@@ -11,10 +11,10 @@ class Utils(object):
 
 
 class Generator:
-    def __init__(self, quality: int = 80, image: Image = None, profile: dict = {
+    def __init__(self, quality: int = 75, image: Image = None, profile: dict = {
         "name": "Пользователь", "age": 18, "city": "Киев", "description": ""
     }) -> None:
-        self.quality = 100
+        self.quality = quality
         self.image = image
         self.color_mode = 'RGB'
         self.profile = profile
