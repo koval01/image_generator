@@ -3,3 +3,4 @@ Pillow
 requests
 gunicorn
 sentry-sdk[flask]
+Flask-Limiter

@@ -2,6 +2,8 @@ import logging
 import os
 import sentry_sdk
 from flask import Flask, request, jsonify, send_file
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from sentry_sdk.integrations.flask import FlaskIntegration
 from generator import Generator
 from other import Other
@@ -12,8 +14,12 @@ sentry_sdk.init(
     integrations=[FlaskIntegration()],
     traces_sample_rate=1.0
 )
-
 app = Flask(__name__)
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["100 per hour"]
+)
 
 
 @app.errorhandler(500)
@@ -46,7 +52,14 @@ def page_not_found(error) -> send_file:
     return Other.get_img_error(408)
 
 
+@app.errorhandler(429)
+def page_not_found(error) -> send_file:
+    logging.error("Error in %s: %s", request.url, error)
+    return Other.get_img_error(429)
+
+
 @app.route("/generate_image", methods=['POST'])
+@limiter.limit("5/minute", override_defaults=False)
 def generate_image() -> send_file:
     data = request.get_json()
     data["profile"] = Validator.fix_desc(data["profile"])
