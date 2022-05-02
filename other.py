@@ -1,5 +1,5 @@
 import logging
-from flask import send_file
+from flask import send_file, jsonify
 from generator import Generator
 
 
@@ -12,4 +12,4 @@ class Other(object):
         if load_img:
             return Generator().image_proc(Generator().get_image_from_url(
                 "https://http.cat/%d" % code))
-        return "", code
+        return jsonify({"error": code}), code
