@@ -1,5 +1,8 @@
+import logging
 import os
 import sentry_sdk
+import base64
+import json
 from flask import Flask, request, send_file
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -54,7 +57,12 @@ def page_not_found(error) -> tuple:
 @app.route("/generate_image", methods=['POST'])
 @limiter.limit("5/minute", override_defaults=False)
 def generate_image() -> send_file:
-    data = request.get_json()
+    try:
+        preset = json.loads(base64.b64decode(request.args.get("preset")))
+        data = preset
+    except Exception as e:
+        logging.info("No preset arg. Exception details: %s" % e)
+        data = request.get_json()
     data["profile"] = Validator.fix_desc(data["profile"])
     error_profile = Validator.validate_profile(data["profile"])
     if not error_profile and (1 < data["quality"] <= 75):
