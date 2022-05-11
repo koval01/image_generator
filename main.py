@@ -54,7 +54,7 @@ def page_not_found(error) -> tuple:
     return Other.get_error(429, request.url, error)
 
 
-@app.route("/generate_image", methods=['POST'])
+@app.route("/generate_image", methods=['POST', 'GET'])
 @limiter.limit("5/minute", override_defaults=False)
 def generate_image() -> send_file:
     try:
